@@ -35,5 +35,6 @@ Route::middleware('auth:sanctum')->get('/candidats/{id}/delete', [CandidatContro
 Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout'])->name('logout');
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'me']);
+Route::post('/set-presence', [CandidatController::class, 'setPresence'])->name('candidats.presence');
 
 

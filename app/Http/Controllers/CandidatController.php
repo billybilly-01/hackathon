@@ -113,18 +113,33 @@ class CandidatController extends Controller
 
             // Enregistrement de la vidéo
             if ($request->hasFile('video')) {
+                // $video = $request->file('video');
+
+                // // Nom personnalisé : prénom_nom_timestamp.extension
+                // $filename = Str::slug($request->prenom . '_' . $request->nom . '_' . $request->telephone) . '_' . time() . '.' . $video->getClientOriginalExtension();
+
+                // // Stocker la vidéo dans "storage/app/public/videos"
+
+
+                // $videoPath = $video->storeAs('videos', $filename, 'public');
+
+                // $validated['video'] = $videoPath;
+
                 $video = $request->file('video');
 
                 // Nom personnalisé : prénom_nom_timestamp.extension
                 $filename = Str::slug($request->prenom . '_' . $request->nom . '_' . $request->telephone) . '_' . time() . '.' . $video->getClientOriginalExtension();
 
-                // Stocker la vidéo dans "storage/app/public/videos"
-                $videoPath = $video->storeAs('videos', $filename, 'public');
+                // Déplacer la vidéo dans "public/videos"
+                $video->move(public_path('videos'), $filename);
 
-                $validated['video'] = $videoPath;
+                // Stocker le chemin relatif dans la base
+                $validated['video'] = 'videos/' . $filename;
             }
 
             $validated["role_id"] = 3;
+            $validated["status"] = "pending"; // Statut par défaut
+
             // $candit = new Candidat();
             // $candit->nom = "DIBY";
             // $candit->prenom = "KOFFI";
@@ -150,6 +165,7 @@ class CandidatController extends Controller
             $candidat->nom_entite = $validated['nom_entite'];
             $candidat->video = $validated['video'];
             $candidat->role_id = 3;
+            $candidat->status = "pending"; // Statut par défaut
 
 
             Mail::to($candidat->email)->send(new CandidatCreated($candidat));
@@ -225,5 +241,73 @@ class CandidatController extends Controller
         $qrCode = QrCode::size(300)->generate($qrData);
 
         return view('qr-code', compact('qrCode', 'user'));
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/set-presence",
+     *     summary="Créer un nouveau candidat",
+     *     tags={"Candidats"},
+     *     operationId="PresenceCandidat",
+     *     description="Mettre à jour la présence d'un candidat en fonction de son email.",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"email"},
+     *                 @OA\Property(property="email", type="string", format="email", example="jean.dupont@example.com"),
+     *                
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Candidat enregistré avec succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Candidat enregistré avec succès."),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="nom", type="string", example="Dupont"),
+     *                 @OA\Property(property="prenom", type="string", example="Jean"),
+     *                 @OA\Property(property="email", type="string", example="jean.dupont@example.com"),
+     *                 @OA\Property(property="video", type="string", example="videos/nom_fichier.mp4")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Données de validation incorrectes",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The email field is required."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function setPresence(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|exists:candidats,email'
+        ]);
+
+        $candidat = Candidat::get("email", $request->email)->first();
+        if (!$candidat) {
+            return response()->json([
+                'message' => 'Candidat non trouvé.',
+                'status' => 'error'
+            ], 404);
+        }
+        // Mettre à jour la présence du candidat
+        $candidat->presence = "1";
+        $candidat->save();
+
+        return response()->json([
+            'message' => 'Présence mise à jour avec succès.',
+            'data' => $candidat,
+            'status' => 'success'
+        ], 200);
     }
 }

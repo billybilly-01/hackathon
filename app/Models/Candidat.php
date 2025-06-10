@@ -17,12 +17,13 @@ class Candidat extends Model
         'video',
         'entite',
         'nom_entite',
-        'role_id'
+        'role_id',
+        'status'
 
     ];
 
-    public function getVideoAttribute($value)
-    {
-        return url('storage/' . $value);
-    }
+    // public function getVideoAttribute($value)
+    // {
+    //     return url('storage/' . $value);
+    // }
 }
