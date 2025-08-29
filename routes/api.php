@@ -18,9 +18,9 @@ Route::get('/candidats', function () {
 
 Route::post('/candidats/store', [CandidatController::class, 'store'])->name('candidats.store');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::middleware('auth:sanctum')->get('/candidats/{id}', [CandidatController::class, 'show'])->name('candidats.show');
 Route::middleware('auth:sanctum')->put('/candidats/{id}', [CandidatController::class, 'update'])->name('candidats.update');
@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->get('/candidats/{id}/delete', [CandidatContro
 // Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout'])->name('logout');
-Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'me']);
+// Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'me']);
 Route::post('/set-presence', [CandidatController::class, 'setPresence'])->name('candidats.presence');
 
 

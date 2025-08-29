@@ -1,292 +1,161 @@
 @extends('admin.layouts.main')
 @section('content')
-    <!-- DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Header -->
+    
 
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0">Dashboard</h1>
-                    </div><!-- /.col -->
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard</li>
-                        </ol>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content-header -->
-
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Dashboard</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <h1>Bienvenue dans le tableau de bord administrateur</h1>
-                                <p>Vous pouvez gérer les utilisateurs, les candidatures et d'autres fonctionnalités ici.</p>
-                            </div>
-                            <div class="card-body">
-                                <table id="example" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nom</th>
-                                            <th>Prénom</th>
-                                            <th>Email</th>
-                                            <th>Entité</th>
-                                            <th>Nom de l'entité</th>
-                                            <th>Date de création</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($candidats as $candidat)
-                                            <tr>
-                                                <td>{{ $candidat->id }}</td>
-                                                <td>{{ $candidat->nom }}</td>
-                                                <td>{{ $candidat->prenom }}</td>
-                                                <td>{{ $candidat->email }}</td>
-                                                <td>{{ $candidat->entite }}</td>
-                                                <td>{{ $candidat->nom_entite }}</td>
-                                                <td>{{ date('d-m-Y', strtotime($candidat->created_at)) }}</td>
-                                                <td>
-                                                    <!-- Exemple d'actions -->
-                                                    <a href="#" class="btn-sm text-primary btn btn-light m-1"
-                                                        id="validateCandidate{{ $candidat->id }}"><i
-                                                            class="fas fa-check-circle"></i></a>
-                                                    <a href="{{ route('admin.candidat.reject', $candidat->id) }}"
-                                                        class="btn-sm text-danger btn btn-light m-1"
-                                                        id="RejectCandidate{{ $candidat->id }}"><i
-                                                            class="fas fa-ban"></i></a>
-                                                    <a href="{{ route('admin.candidat.show', $candidat->id) }}"
-                                                        class="btn-sm text-success btn btn-light m-1" data-toggle="modal"
-                                                        data-target="#candidatModal{{ $candidat->id }}"><i
-                                                            class="fas fa-eye"></i></a>
-                                                </td>
-                                            </tr>
-
-                                            <div class="modal fade" id="candidatModal{{ $candidat->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="candidatModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="candidatModalLabel">Détail du
-                                                                candidat {{ $candidat->nom }}</h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Fermer">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="card" style="width: 100%;">
-                                                                <ul class="list-group list-group-flush">
-                                                                    <li class="list-group-item">{{ $candidat->nom }}
-                                                                        {{ $candidat->prenom }}</li>
-                                                                    <li class="list-group-item">{{ $candidat->email }} /
-                                                                        {{ $candidat->telephone }}</li>
-                                                                    <li class="list-group-item">{{ $candidat->entite }} /
-                                                                        {{ $candidat->nom_entite }}</li>
-                                                                    <li class="list-group-item">{{ $candidat->pays }} /
-                                                                        {{ $candidat->ville }} / {{ $candidat->adresse }}
-                                                                    </li>
-                                                                </ul>
-
-                                                                @if ($candidat->video)
-                                                                    <video width="100%" height="auto" controls
-                                                                        style="margin-top: 20px; padding: 20px; border-radius: 35px;">
-                                                                        <source src="{{ asset($candidat->video) }}"
-                                                                            type="video/mp4">
-                                                                        Votre navigateur ne supporte pas la lecture vidéo.
-                                                                    </video>
-                                                                @else
-                                                                    <p>Aucune vidéo disponible.</p>
-                                                                @endif
-                                                            </div>
-                                                            <div class="row mt-5 mb-3">
-                                                                <div class="col-md-6 text-center">
-                                                                    <a href="{{ route('admin.candidat.validate', $candidat->id) }}"
-                                                                        class="btn btn-primary">Accepter</a>
-                                                                </div>
-                                                                <div class="col-md-6 text-center">
-                                                                    <a href="{{ route('admin.candidat.reject', $candidat->id) }}"
-                                                                        class="btn btn-danger">Rejeter</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-                                            <script>
-                                                $(document).ready(function() {
-                                                    $('#validateCandidate{{ $candidat->id }}').on('click', function() {
-                                                        // Démarrer la vidéo lorsque le modal est ouvert
-                                                        Swal.fire({
-                                                            title: "Confirmation!",
-                                                            text: "Êtes-vous sûr de vouloir valider {{ $candidat->nom }} {{ $candidat->prenom }} ?",
-                                                            type: "warning",
-                                                            allowEscapeKey: false,
-                                                            allowOutsideClick: false,
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: "#DD6B55",
-                                                            confirmButtonText: "Oui",
-                                                            cancelButtonText: "Non",
-                                                            showLoaderOnConfirm: true,
-                                                            closeOnConfirm: false
-                                                        }).then((isConfirm) => {
-                                                            if (isConfirm.value === true) {
-                                                                // document.getElementById("delForm").submit();
-                                                                // return true;
-                                                                $.ajax({
-                                                                    url: "{{ route('admin.candidat.validate', $candidat->id) }}",
-                                                                    type: "POST",
-                                                                    data: {
-                                                                        _token: '{{ csrf_token() }}'
-                                                                    },
-                                                                    success: function(response) {
-                                                                        // Traitez la réponse du serveur ici
-                                                                        console.log(response);
-                                                                        Swal.fire({
-                                                                            title: "Succès",
-                                                                            text: response.message,
-                                                                            type: "success"
-                                                                        }).then(() => {
-                                                                            // Rediriger ou mettre à jour la page après la suppression
-                                                                            // location.reload();
-                                                                        });
-                                                                    },
-                                                                    error: function(xhr, status, error) {
-                                                                        // Gérez les erreurs ici
-                                                                        console.error(error);
-                                                                    }
-                                                                });
-                                                            } else {
-                                                                // L'utilisateur a annulé l'action
-                                                                Swal.fire({
-                                                                    title: "Annulé",
-                                                                    text: "L'action a été annulée.",
-                                                                    type: "info"
-                                                                });
-                                                            }
-
-                                                        });
-                                                    });
-
-                                                    $('#RejectCandidate{{ $candidat->id }}').on('click', function(e) {
-                                                        e.preventDefault(); // Empêche le lien de rediriger immédiatement
-                                                        Swal.fire({
-                                                            title: "Confirmation!",
-                                                            text: "Êtes-vous sûr de vouloir rejeter {{ $candidat->nom }} {{ $candidat->prenom }} ?",
-                                                            type: "warning",
-                                                            allowEscapeKey: false,
-                                                            allowOutsideClick: false,
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: "#DD6B55",
-                                                            confirmButtonText: "Oui",
-                                                            cancelButtonText: "Non",
-                                                            showLoaderOnConfirm: true,
-                                                            closeOnConfirm: false
-                                                        }).then((isConfirm) => {
-                                                            if (isConfirm.value === true) {
-                                                                // Rediriger vers la route de rejet
-                                                                // window.location.href = "{{ route('admin.candidat.reject', $candidat->id) }}";
-                                                                $.ajax({
-                                                                    url: "{{ route('admin.candidat.reject', $candidat->id) }}",
-                                                                    type: "POST",
-                                                                    data: {
-                                                                        _token: '{{ csrf_token() }}'
-                                                                    },
-                                                                    success: function(response) {
-                                                                        // Traitez la réponse du serveur ici
-                                                                        console.log(response);
-                                                                        Swal.fire({
-                                                                            title: "Succès",
-                                                                            text: response.message,
-                                                                            type: "success"
-                                                                        }).then(() => {
-                                                                            // Rediriger ou mettre à jour la page après le rejet
-                                                                            // location.reload();
-                                                                        });
-                                                                    },
-                                                                    error: function(xhr, status, error) {
-                                                                        // Gérez les erreurs ici
-                                                                        console.error(error);
-                                                                    }
-                                                                });
-
-                                                            } else {
-                                                                // L'utilisateur a annulé l'action
-                                                                Swal.fire({
-                                                                    title: "Annulé",
-                                                                    text: "L'action a été annulée.",
-                                                                    type: "info"
-                                                                });
-                                                            }
-                                                        });
-                                                    });
-                                                });
-                                            </script>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-
-
-
-
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
+    <!-- Content Area -->
+    <div class="content-area">
+        <div id="pageContent">
+            <!-- Dashboard Content -->
+            <div class="page-content fade-in-up" id="dashboard-content">
+                <div class="page-header">
+                    <h1 class="page-title">Tableau de bord</h1>
+                    <p class="page-subtitle">Bienvenue dans votre espace d'administration</p>
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Total des ventes</div>
+                            <div class="stat-icon primary">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">€45,231</div>
+                        <div class="stat-change positive">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            +12% ce mois-ci
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Nouveaux clients</div>
+                            <div class="stat-icon success">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-change positive">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            +8% ce mois-ci
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Commandes</div>
+                            <div class="stat-icon warning">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">567</div>
+                        <div class="stat-change negative">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            -3% ce mois-ci
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Taux de conversion</div>
+                            <div class="stat-icon error">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">3.24%</div>
+                        <div class="stat-change positive">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            +0.1% ce mois-ci
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Dernières commandes</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary">Exporter</button>
+                            <button class="btn btn-primary">Nouvelle commande</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Client</th>
+                                <th>Produit</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#12345</td>
+                                <td>Marie Dupont</td>
+                                <td>MacBook Pro 16"</td>
+                                <td>€2,399</td>
+                                <td><span class="status-badge status-active">Livré</span></td>
+                                <td>15 Août 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#12344</td>
+                                <td>Pierre Martin</td>
+                                <td>iPhone 15 Pro</td>
+                                <td>€1,199</td>
+                                <td><span class="status-badge status-pending">En cours</span></td>
+                                <td>14 Août 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#12343</td>
+                                <td>Sophie Bernard</td>
+                                <td>iPad Air</td>
+                                <td>€649</td>
+                                <td><span class="status-badge status-active">Livré</span></td>
+                                <td>13 Août 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#12342</td>
+                                <td>Lucas Moreau</td>
+                                <td>AirPods Pro</td>
+                                <td>€279</td>
+                                <td><span class="status-badge status-inactive">Annulé</span></td>
+                                <td>12 Août 2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-    <script src="https://cdn.datatables.net/2.3.1/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.dataTables.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
-    <script>
-        $(document).ready(function() {
-
-
-            let table = new DataTable('#example', {
-                layout: {
-                    topStart: {
-                        buttons: ['excel'],
-                    }
-                }
-            });
-
-            // $('#example').DataTable({
-            //     // dom: 'Bfrtip',
-            //     buttons: [
-            //         'csv'
-            //     ]
-            // });
-
-
-        });
-    </script>
-    <!-- /.content-wrapper -->
 @endsection

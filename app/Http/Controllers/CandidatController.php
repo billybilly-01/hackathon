@@ -22,7 +22,10 @@ class CandidatController extends Controller
      */
 
 
-
+public function candidats(){
+     $candidats = Candidat::get();
+        return view('admin.candidats', compact('candidats'));
+}
 
     /**
      * @OA\Post(

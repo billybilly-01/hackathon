@@ -17,7 +17,11 @@ Route::post('/admin/login', [AdminController::class, 'loginSubmit'])->name('admi
 Route::prefix('admin')->group(function () {
 
     Route::get('/home', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/candidats', [CandidatController::class, 'index'])->name('admin.candidats.index');
+    Route::middleware('auth:sanctum')->get('/connect-user', [AdminController::class, 'connectUser'])->name('admin.connect.user');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    // Route::get('/connect-user', [AdminController::class, 'connectUser'])->name('admin.connect.user');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/candidats', [CandidatController::class, 'candidats'])->name('admin.candidats');
     Route::get('/candidats/{id}', [CandidatController::class, 'show'])->name('admin.candidat.show');
     Route::put('/candidats/{id}', [CandidatController::class, 'update'])->name('admin.candidats.update');;
     Route::get('/candidat/{id}/video', [CandidatController::class, 'getVideo'])->name('admin.candidat.video');

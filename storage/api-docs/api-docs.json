@@ -6,6 +6,46 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/admin/connect-user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Récupérer l'utilisateur connecté",
+                "operationId": "12b149b7804b5ccc79aefba85a3f2789",
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur connecté",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/candidats/store": {
             "post": {
                 "tags": [
@@ -356,12 +396,12 @@
     },
     "tags": [
         {
-            "name": "Candidats",
-            "description": "Candidats"
-        },
-        {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Candidats",
+            "description": "Candidats"
         }
     ]
 }
