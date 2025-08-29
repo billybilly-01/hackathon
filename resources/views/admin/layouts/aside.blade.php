@@ -1,8 +1,8 @@
 <nav class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
-            <img src="{{ asset('dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
-                class="brand-image img-circle elevation-3" style="opacity: .8; width:60px">
+            <img src="{{ asset('logo.png') }}" alt="AdminLTE Logo"
+                class="brand-image img-circle elevation-3" style="opacity: .8; width:40px; border-radius: 50%;">
             HACKDAY'S IA
         </div>
     </div>

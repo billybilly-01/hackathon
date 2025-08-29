@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Hackday's IA</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <!-- Style here -->
     <link rel="stylesheet" href="{{ asset('dist/css/style.css') }}">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
